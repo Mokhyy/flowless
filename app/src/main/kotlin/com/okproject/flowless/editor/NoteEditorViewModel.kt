@@ -7,6 +7,8 @@ import com.okproject.flowless.domain.brush.UpdateBrushUseCase
 import com.okproject.flowless.domain.model.brush.Brush
 import com.okproject.flowless.domain.model.brush.BrushType
 import com.okproject.flowless.domain.model.stroke.Stroke
+import com.okproject.flowless.domain.note.GetSavedStrokesUseCase
+import com.okproject.flowless.domain.note.SaveStrokesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +19,14 @@ import kotlinx.coroutines.launch
 
 
 class NoteEditorViewModel(
+    private val getSavedStrokesUseCase: GetSavedStrokesUseCase,
+    private val saveStrokesUseCase: SaveStrokesUseCase,
     private val getLatestBrushUseCase: GetLatestBrushUseCase,
     private val updateBrushUseCase: UpdateBrushUseCase
 ): ViewModel() {
+
+    private val _isLoadingState = MutableStateFlow(true)
+    val isLoadingState: StateFlow<Boolean> = _isLoadingState
 
     val brush: StateFlow<Brush> = getLatestBrushUseCase()
         .stateIn(
@@ -33,6 +40,16 @@ class NoteEditorViewModel(
 
     private val _finishedStrokes: MutableStateFlow<Set<Stroke>> = MutableStateFlow(emptySet())
     val finishedStrokes: StateFlow<Set<Stroke>> = _finishedStrokes.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            getSavedStrokesUseCase()
+                .onSuccess {
+                    _finishedStrokes.emit(it)
+                }
+            _isLoadingState.emit(false)
+        }
+    }
 
     fun onBrushColorChanged(color: Long) {
         viewModelScope.launch {
@@ -54,6 +71,14 @@ class NoteEditorViewModel(
 
     fun onStrokeFinished(strokes: Collection<Stroke>) {
         _finishedStrokes.update { it + strokes }
+    }
+
+    fun saveNote() {
+        viewModelScope.launch {
+            _isLoadingState.emit(true)
+            saveStrokesUseCase(finishedStrokes.value)
+            _isLoadingState.emit(false)
+        }
     }
 
     companion object {

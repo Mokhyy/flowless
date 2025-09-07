@@ -1,7 +1,6 @@
 package com.okproject.flowless
 
 import android.app.role.RoleManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,15 +9,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import com.okproject.flowless.editor.NoteEditorScreen
 import com.okproject.flowless.role.RoleViewModel
 import com.okproject.flowless.ui.theme.FlowlessTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity() {
     private val roleViewModel: RoleViewModel by viewModel()
@@ -29,7 +23,7 @@ class MainActivity : ComponentActivity() {
         }
 
     private val roleManager: RoleManager by lazy {
-        getSystemService(Context.ROLE_SERVICE) as RoleManager
+        getSystemService(ROLE_SERVICE) as RoleManager
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,17 +31,8 @@ class MainActivity : ComponentActivity() {
         requestNotesRole()
         enableEdgeToEdge()
         setContent {
-            KoinContext {
-                FlowlessTheme {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize()
-                    ) { innerPaddings ->
-                        NoteEditorScreen(
-                            modifier = Modifier
-                                .padding(top = innerPaddings.calculateTopPadding())
-                        )
-                    }
-                }
+            FlowlessTheme {
+                NoteEditorScreen()
             }
         }
     }

@@ -56,7 +56,7 @@ object StrokeInputBatchMapper {
         val batch = MutableStrokeInputBatch()
 
         inputs.inputs.forEach { input ->
-            batch.addOrThrow(
+            batch.add(
                 type = inputToolType,
                 x = input.x,
                 y = input.y,

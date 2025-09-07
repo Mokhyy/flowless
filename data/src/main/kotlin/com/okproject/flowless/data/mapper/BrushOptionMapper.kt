@@ -10,11 +10,3 @@ internal fun BrushOption.mapToBrush(): Brush =
         epsilon = this.epsilon,
         brushType = BrushTypeOptionMapper.mapToType(this.type)
     )
-
-internal fun Brush.mapToBrushOption(): BrushOption =
-    BrushOption(
-        type = BrushTypeOptionMapper.mapToTypeOption(this.brushType),
-        color = this.color,
-        size = this.size,
-        epsilon = this.epsilon
-    )

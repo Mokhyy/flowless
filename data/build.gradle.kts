@@ -2,11 +2,12 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.square.wire)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
     namespace = "com.okproject.flowless.data"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 29
@@ -25,11 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -43,6 +41,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.timber)
     implementation(project(":domain"))
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
